@@ -1,0 +1,122 @@
+{
+  "best_model": "Random Forest",
+  "models": {
+    "Logistic Regression": {
+      "accuracy": 0.6764,
+      "precision": 0.2195,
+      "recall": 0.699,
+      "f1_score": 0.3341,
+      "confusion_matrix": [
+        [
+          30397,
+          14742
+        ],
+        [
+          1785,
+          4146
+        ]
+      ]
+    },
+    "Decision Tree": {
+      "accuracy": 0.8814,
+      "precision": 0.42,
+      "recall": 0.0553,
+      "f1_score": 0.0977,
+      "confusion_matrix": [
+        [
+          44686,
+          453
+        ],
+        [
+          5603,
+          328
+        ]
+      ]
+    },
+    "Random Forest": {
+      "accuracy": 0.778,
+      "precision": 0.2713,
+      "recall": 0.5407,
+      "f1_score": 0.3613,
+      "confusion_matrix": [
+        [
+          36524,
+          8615
+        ],
+        [
+          2724,
+          3207
+        ]
+      ]
+    }
+  },
+  "feature_importances": [
+    {
+      "feature": "Age",
+      "importance": 0.2148
+    },
+    {
+      "feature": "InterestRate",
+      "importance": 0.1605
+    },
+    {
+      "feature": "Income",
+      "importance": 0.138
+    },
+    {
+      "feature": "MonthsEmployed",
+      "importance": 0.1021
+    },
+    {
+      "feature": "LoanAmount",
+      "importance": 0.1015
+    },
+    {
+      "feature": "CreditScore",
+      "importance": 0.0593
+    },
+    {
+      "feature": "DTIRatio",
+      "importance": 0.0482
+    },
+    {
+      "feature": "LoanTerm",
+      "importance": 0.018
+    },
+    {
+      "feature": "NumCreditLines",
+      "importance": 0.0179
+    },
+    {
+      "feature": "EmploymentType_Full-time",
+      "importance": 0.0101
+    },
+    {
+      "feature": "HasCoSigner_Yes",
+      "importance": 0.0078
+    },
+    {
+      "feature": "EmploymentType_Unemployed",
+      "importance": 0.0075
+    },
+    {
+      "feature": "HasCoSigner_No",
+      "importance": 0.0073
+    },
+    {
+      "feature": "MaritalStatus_Married",
+      "importance": 0.0072
+    },
+    {
+      "feature": "HasDependents_Yes",
+      "importance": 0.007
+    }
+  ],
+  "dataset_summary": {
+    "total_records": 255347,
+    "total_features": 16,
+    "default_count": 29653,
+    "non_default_count": 225694,
+    "default_rate_pct": 11.61
+  }
+}

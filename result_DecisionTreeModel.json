@@ -1,0 +1,11 @@
+{
+  "model": "Decision Tree",
+  "accuracy": 0.885,
+  "precision": 0.5993,
+  "recall": 0.0305,
+  "f1_score": 0.0581,
+  "cv_mean_f1": 0.0868,
+  "cv_std_f1": 0.0269,
+  "fit_status": "Underfitting [Warning]",
+  "best_params": "{'criterion': 'gini', 'max_depth': 6, 'min_samples_split': 20}"
+}

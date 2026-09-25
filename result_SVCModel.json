@@ -1,0 +1,11 @@
+{
+  "model": "Support Vector Classifier (SVC)",
+  "accuracy": 0.6747,
+  "precision": 0.2193,
+  "recall": 0.7036,
+  "f1_score": 0.3344,
+  "cv_mean_f1": "N/A (Baseline)",
+  "cv_std_f1": "N/A (Baseline)",
+  "fit_status": "Baseline Model",
+  "best_params": "class_weight='balanced'"
+}
