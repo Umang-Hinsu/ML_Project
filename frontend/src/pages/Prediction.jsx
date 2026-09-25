@@ -145,9 +145,10 @@ const Prediction = () => {
       console.error(err);
       setError(
         err.response?.data?.detail || 
-        'Failed to process ML prediction. Please check that FastAPI backend is running at http://localhost:8000.'
+        'Failed to process ML prediction. Please check that the backend prediction API is online and accessible.'
       );
     } finally {
+
       setLoading(false);
     }
   };

@@ -1,14 +1,32 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+/**
+ * Normalizes the API URL to guarantee it points to the valid '/api' prefix,
+ * preventing common deployment typos (e.g. omitting /api or adding trailing slashes).
+ */
+export const getCleanApiBaseUrl = () => {
+  const envUrl = process.env.REACT_APP_API_URL;
+  if (!envUrl || !envUrl.trim()) {
+    return 'http://localhost:8000/api';
+  }
+  let cleanUrl = envUrl.trim().replace(/\/+$/, '');
+  if (!cleanUrl.endsWith('/api')) {
+    cleanUrl += '/api';
+  }
+  return cleanUrl;
+};
+
+export const API_BASE_URL = getCleanApiBaseUrl();
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  // 60 seconds timeout to accommodate free-tier cloud container cold starts (e.g. Render / Railway)
+  timeout: 60000,
 });
+
 
 export const apiService = {
   // GET /api/health

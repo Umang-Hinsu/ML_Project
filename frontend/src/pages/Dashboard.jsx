@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import StatCard from '../components/StatCard';
 import RiskBadge from '../components/RiskBadge';
-import apiService from '../services/api';
+import apiService, { API_BASE_URL } from '../services/api';
 import { 
   Users, 
   AlertOctagon, 
@@ -13,7 +13,8 @@ import {
   TrendingUp, 
   ArrowRight,
   Sparkles,
-  RefreshCw
+  RefreshCw,
+  AlertTriangle
 } from 'lucide-react';
 import { 
   PieChart, 
@@ -33,20 +34,41 @@ import {
 const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isRetrying, setIsRetrying] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchDashboardData = async () => {
-    setLoading(true);
     setError(null);
     try {
       const res = await apiService.getDashboardData();
       setData(res);
     } catch (err) {
-      setError('Unable to load live backend metrics. Ensure FastAPI is running on port 8000.');
+      console.error('Failed to load dashboard metrics:', err);
+      const isLocalhost = API_BASE_URL.includes('localhost') || API_BASE_URL.includes('127.0.0.1');
+      if (isLocalhost) {
+        setError({
+          type: 'localhost_config',
+          message: `The frontend is calling '${API_BASE_URL}'. Because your frontend is deployed live, it cannot reach your personal computer's localhost.`,
+          solution: `Please configure the 'REACT_APP_API_URL' environment variable in your hosting settings (e.g. Vercel/Netlify) with your deployed backend URL (e.g. https://your-backend.onrender.com/api) and trigger a redeployment.`
+        });
+      } else {
+        setError({
+          type: 'live_connection',
+          message: `Unable to connect to live backend API at '${API_BASE_URL}'.`,
+          solution: `If your backend is hosted on a free cloud tier (like Render), it automatically sleeps when inactive and takes 40–60 seconds to wake up. Click 'Retry Connection' below.`
+        });
+      }
     } finally {
       setLoading(false);
+      setIsRetrying(false);
     }
   };
+
+  const handleRetry = () => {
+    setIsRetrying(true);
+    fetchDashboardData();
+  };
+
 
   useEffect(() => {
     fetchDashboardData();
@@ -127,16 +149,55 @@ const Dashboard = () => {
 
       {error && (
         <div style={{
-          background: 'rgba(239, 68, 68, 0.15)',
-          border: '1px solid rgba(239, 68, 68, 0.4)',
-          padding: '1rem 1.25rem',
-          borderRadius: '12px',
-          color: '#F87171',
-          fontSize: '0.875rem'
+          background: 'rgba(239, 68, 68, 0.1)',
+          border: '1px solid rgba(239, 68, 68, 0.35)',
+          padding: '1.25rem 1.5rem',
+          borderRadius: '14px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.75rem'
         }}>
-          ⚠️ {error}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+            <AlertTriangle size={22} color="#EF4444" style={{ flexShrink: 0, marginTop: '2px' }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 700, color: '#F87171', fontSize: '0.95rem', marginBottom: '0.25rem' }}>
+                {error.type === 'localhost_config' ? 'Backend URL Not Configured on Live Frontend' : 'Unable to Connect to Live Backend API'}
+              </div>
+              <p style={{ color: '#E2E8F0', fontSize: '0.85rem', lineHeight: 1.5, margin: 0 }}>
+                {error.message}
+              </p>
+              <p style={{ color: '#94A3B8', fontSize: '0.825rem', marginTop: '0.35rem', lineHeight: 1.4 }}>
+                <strong>How to fix:</strong> {error.solution}
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.25rem', paddingLeft: '2.1rem' }}>
+            <button
+              onClick={handleRetry}
+              disabled={isRetrying}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: '#4F46E5',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                fontSize: '0.825rem',
+                fontWeight: 600,
+                cursor: isRetrying ? 'not-allowed' : 'pointer',
+                opacity: isRetrying ? 0.7 : 1,
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <RefreshCw size={14} className={isRetrying ? 'animate-spin' : ''} />
+              {isRetrying ? 'Retrying Connection...' : 'Retry Connection'}
+            </button>
+          </div>
         </div>
       )}
+
 
       {/* KPI Cards Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '1.25rem' }}>
