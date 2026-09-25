@@ -5,16 +5,29 @@ import axios from 'axios';
  * preventing common deployment typos (e.g. omitting /api or adding trailing slashes).
  */
 export const getCleanApiBaseUrl = () => {
-  const envUrl = process.env.REACT_APP_API_URL;
+  const envUrl = 
+    process.env.REACT_APP_API_URL || 
+    process.env.REACT_APP_BACKEND_URL || 
+    process.env.REACT_APP_SERVER_URL;
+
   if (!envUrl || !envUrl.trim()) {
     return 'http://localhost:8000/api';
   }
+  
   let cleanUrl = envUrl.trim().replace(/\/+$/, '');
+
+  // If protocol is missing (e.g. user entered "ml-project-theta-six.vercel.app"), auto-prepend https://
+  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+    cleanUrl = 'https://' + cleanUrl;
+  }
+
+  // Ensure /api prefix is present
   if (!cleanUrl.endsWith('/api')) {
     cleanUrl += '/api';
   }
   return cleanUrl;
 };
+
 
 export const API_BASE_URL = getCleanApiBaseUrl();
 

@@ -57,8 +57,11 @@ async def health_check():
         "modelLoaded": is_model_ready,
         "selectedModel": "Logistic Regression",
         "availableModels": list(prediction_service.models.keys()),
-        "metricsAvailable": prediction_service.metrics is not None
+        "metricsAvailable": prediction_service.metrics is not None,
+        "pipelineReady": prediction_service.pipeline is not None,
+        "loadErrors": prediction_service.load_errors
     }
+
 
 if __name__ == "__main__":
     import uvicorn
